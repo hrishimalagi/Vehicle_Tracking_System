@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="vehicleTrackingApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Tracking System</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    <style>
+        /* Add your custom styles here */
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 50px;
+            text-align: center;
+        }
+        .hero-section {
+            background-color: #337ab7;
+            color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .hero-section h2 {
+            margin-bottom: 20px;
+        }
+        .btn-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" ng-controller="MainController">
+    <!-- Navbar with login and registration options -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Vehicle Tracking</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a ng-click="toggle('home')">HOME</a></li>
+                <li><a ng-click="toggle('create')">CREATE</a></li>
+                <li><a ng-click="toggle('read')">READ</a></li>
+                <li><a ng-click="toggle('update')">UPDATE</a></li>
+                <li><a ng-click="toggle('delete')">DELETE</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a ng-click="toggle('login')">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login tab with login component -->
+    <div ng-show="showLogin">
+        <h3>Login</h3>
+        <form ng-submit="login()">
+            <input type="text" ng-model="loginData.username" placeholder="Username" required>
+            <input type="password" ng-model="loginData.password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>New user? <a ng-click="toggle('registration')">Register here</a></p>
+    </div>
+
+    <!-- Registration tab with registration component -->
+    <div ng-show="showRegistration">
+        <h3>Registration</h3>
+        <form ng-submit="register()">
+            <input type="text" ng-model="registrationData.username" placeholder="Username" required>
+            <input type="password" ng-model="registrationData.password" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <!-- Other tabs for different features -->
+    <div ng-show="showHome">
+        <h3>Home</h3>
+        <!-- Add content for home tab here -->
+    </div>
+
+    <div ng-show="showCreate">
+        <h3>Create</h3>
+        <!-- Add content for create tab here -->
+    </div>
+
+    <div ng-show="showRead">
+        <h3>Read</h3>
+        <!-- Add content for read tab here -->
+    </div>
+
+    <div ng-show="showUpdate">
+        <h3>Update</h3>
+        <!-- Add content for update tab here -->
+    </div>
+
+    <div ng-show="showDelete">
+        <h3>Delete</h3>
+        <!-- Add content for delete tab here -->
+    </div>
+</div>
+
+<script>
+    var vehicleTrackingApp = angular.module('vehicleTrackingApp', []);
+
+    vehicleTrackingApp.controller('MainController', function ($scope) {
+        // Flags for controlling visibility of components
+        $scope.showLogin = false;
+        $scope.showRegistration = false;
+        $scope.showHome = true;
+        $scope.showCreate = false;
+        $scope.showRead = false;
+        $scope.showUpdate = false;
+        $scope.showDelete = false;
+
+        // Function to toggle component visibility
+        $scope.toggle = function (section) {
+            // Reset all flags
+            $scope.showLogin = false;
+            $scope.showRegistration = false;
+            $scope.showHome = false;
+            $scope.showCreate = false;
+            $scope.showRead = false;
+            $scope.showUpdate = false;
+            $scope.showDelete = false;
+
+            // Set the flag for the selected section
+            if (section === 'login') {
+                $scope.showLogin = true;
+            } else if (section === 'registration') {
+                $scope.showRegistration = true;
+            } else if (section === 'home') {
+                $scope.showHome = true;
+            } else if (section === 'create') {
+                $scope.showCreate = true;
+            } else if (section === 'read') {
+                $scope.showRead = true;
+            } else if (section === 'update') {
+                $scope.showUpdate = true;
+            } else if (section === 'delete') {
+                $scope.showDelete = true;
+            } else {
+                $scope.showHome = true; // Default to home
+            }
+        };
+
+        // Functions for login and registration
+        $scope.login = function() {
+            // Implement login functionality
+        };
+
+        $scope.register = function() {
+            // Implement user registration functionality
+        };
+
+        // Functions for other features
+        // Implement as per your application requirements
+    });
+</script>
+
+</body>
+</html>
