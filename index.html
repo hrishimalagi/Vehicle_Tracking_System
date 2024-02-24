@@ -76,6 +76,25 @@
         </form>
     </div>
 
+    <!-- Booking form -->
+    <div ng-show="showBooking" ng-if="isAuthenticated">
+        <h3>Book a Vehicle</h3>
+        <form ng-submit="bookVehicle()">
+            <input type="text" ng-model="bookingDetails.vehicleID" placeholder="Vehicle ID" required>
+            <input type="datetime-local" ng-model="bookingDetails.bookingTime" required>
+            <!-- Other booking details -->
+            <button type="submit">Book</button>
+        </form>
+    </div>
+
+    <!-- Display booking details -->
+    <div ng-show="showBookingDetails">
+        <h3>Your Booking Details</h3>
+        <p>Vehicle ID: {{ bookedVehicle.vehicleID }}</p>
+        <p>Booking Time: {{ bookedVehicle.bookingTime }}</p>
+        <!-- Display other booking details -->
+    </div>
+
     <!-- Other tabs for different features -->
     <div ng-show="showHome">
         <h3>Home</h3>
@@ -83,30 +102,99 @@
     </div>
 
     <div ng-show="showCreate">
-        <h3>Create</h3>
-        <!-- Add content for create tab here -->
+        <h3>Create Booking</h3>
+        <form ng-submit="createBooking()">
+            <div class="form-group">
+                <label for="userID">User ID:</label>
+                <input type="text" class="form-control" id="userID" ng-model="bookingDetails.userID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="vehicleID">Vehicle ID:</label>
+                <input type="text" class="form-control" id="vehicleID" ng-model="bookingDetails.vehicleID" required>
+            </div>
+            <div class="form-group">
+                <label for="bookingTime">Booking Time:</label>
+                <input type="datetime-local" class="form-control" id="bookingTime" ng-model="bookingDetails.bookingTime" required>
+            </div>
+
+            <!-- Other fields as per your database schema -->
+            <button type="submit" class="btn btn-primary">Create Booking</button>
+        </form>
     </div>
 
+
+    <!-- Add content for read tab here -->
     <div ng-show="showRead">
         <h3>Read</h3>
-        <!-- Add content for read tab here -->
+
+
+        <div>
+            <label for="selectedDate">Select Date:</label>
+            <input type="date" id="selectedDate" ng-model="selectedDate" ng-change="getBookings()">
+            <div>
+                <label for="userID">User ID:</label>
+                <input type="text" id="userID" ng-model="userID">
+                <!-- Add input field for Vehicle ID -->
+                <label for="vehicleID">Vehicle ID:</label>
+                <input type="text" id="vehicleID" ng-model="vehicleID">
+            </div>
+            <button ng-click="getBookings()">Fetch Bookings</button>
+        </div>
+        <div ng-show="bookings.length > 0">
+            <h4>Bookings for {{ selectedDate | date: 'yyyy-MM-dd' }}</h4>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Vehicle ID</th>
+                    <th>Driver ID</th>
+                    <th>User ID</th>
+                    <!-- Add more headers as per your requirements -->
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="booking in bookings">
+                    <td>{{ booking.vehicleID }}</td>
+                    <td>{{ booking.driverID }}</td>
+                    <td>{{ booking.userID }}</td>
+                    <!-- Add more columns as per your requirements -->
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-show="bookings.length === 0 && selectedDate">
+            <p>No bookings found for {{ selectedDate | date: 'yyyy-MM-dd' }}</p>
+        </div>
     </div>
+
 
     <div ng-show="showUpdate">
         <h3>Update</h3>
-        <!-- Add content for update tab here -->
+        <div>
+            <label for="updateSearchField">Search:</label>
+            <input type="text" id="updateSearchField" ng-model="updateSearchQuery">
+            <button ng-click="searchAndUpdate()">Search</button>
+        </div>
+        <!-- Display search results and update form here -->
+        <!-- Iterate over search results and provide options to update -->
     </div>
 
     <div ng-show="showDelete">
         <h3>Delete</h3>
-        <!-- Add content for delete tab here -->
+        <div>
+            <label for="deleteSearchField">Search:</label>
+            <input type="text" id="deleteSearchField" ng-model="deleteSearchQuery">
+            <button ng-click="searchAndDelete()">Search</button>
+        </div>
+        <!-- Display search results and delete option here -->
+        <!-- Iterate over search results and provide options to delete -->
     </div>
 </div>
 
 <script>
     var vehicleTrackingApp = angular.module('vehicleTrackingApp', []);
 
-    vehicleTrackingApp.controller('MainController', function ($scope) {
+    vehicleTrackingApp.controller('MainController', function ($scope, $http) {
         // Flags for controlling visibility of components
         $scope.showLogin = false;
         $scope.showRegistration = false;
@@ -115,6 +203,16 @@
         $scope.showRead = false;
         $scope.showUpdate = false;
         $scope.showDelete = false;
+        $scope.showBooking = false;
+        $scope.showBookingDetails = false;
+
+        $scope.isAuthenticated = true; // Initialize authentication status
+        $scope.bookingDetails = {}; // Initialize booking details
+        $scope.bookedVehicle = {}; // Initialize booked vehicle details
+        $scope.loginData = {}; // Initialize login data
+        $scope.registrationData = {}; // Initialize registration data
+        $scope.selectedDate = new Date(); // Initialize selected date
+        $scope.bookings = []; // Initialize array to hold bookings
 
         // Function to toggle component visibility
         $scope.toggle = function (section) {
@@ -126,6 +224,8 @@
             $scope.showRead = false;
             $scope.showUpdate = false;
             $scope.showDelete = false;
+            $scope.showBooking = false;
+            $scope.showBookingDetails = false;
 
             // Set the flag for the selected section
             if (section === 'login') {
@@ -142,24 +242,100 @@
                 $scope.showUpdate = true;
             } else if (section === 'delete') {
                 $scope.showDelete = true;
+            } else if (section === 'booking') {
+                $scope.showBooking = true;
+            } else if (section === 'bookingDetails') {
+                $scope.showBookingDetails = true;
             } else {
                 $scope.showHome = true; // Default to home
             }
         };
 
-        // Functions for login and registration
+        // Function to handle user login
         $scope.login = function() {
             // Implement login functionality
         };
 
+        // Function to handle user registration
         $scope.register = function() {
             // Implement user registration functionality
         };
 
-        // Functions for other features
-        // Implement as per your application requirements
+        // Function to check if the user is authenticated
+        $scope.checkAuthentication = function() {
+            // Implement authentication check logic
+            // Set $scope.isAuthenticated based on authentication status
+        };
+
+        // Function to handle booking a vehicle
+        $scope.bookVehicle = function() {
+            // Check if the user is authenticated
+            if ($scope.isAuthenticated) {
+                // Send booking details to the server
+                $http.post('/api/bookings', $scope.bookingDetails)
+                    .then(function(response) {
+                        // Display booking details to the user
+                        $scope.bookedVehicle = response.data;
+                        $scope.showBookingDetails = true;
+                    })
+                    .catch(function(error) {
+                        console.error('Error booking vehicle:', error);
+                    });
+            } else {
+                // Prompt user to log in before booking
+                alert('Please log in to book a vehicle.');
+            }
+        };
+
+        // Function to fetch bookings for the selected date
+        $scope.getBookings = function() {
+            // Format selected date to YYYY-MM-DD format
+            var formattedDate = $scope.selectedDate.toISOString().split('T')[0];
+
+            // Make an HTTP request to fetch bookings based on the selected date
+            $http.get('/api/bookings?date=' + formattedDate)
+                .then(function(response) {
+                    $scope.bookings = response.data; // Assign fetched bookings to scope variable
+                    $scope.showRead = true; // Show the Read section
+                })
+                .catch(function(error) {
+                    console.error('Error fetching bookings:', error);
+                });
+        };
+
+        // Function to search and update entries
+        $scope.searchAndUpdate = function() {
+            // Implement search and update functionality based on the search query
+            // Send request to the backend API to search for entries to update
+            // Update $scope.updateSearchResults with the search results
+        };
+
+        // Function to search and delete entries
+        $scope.searchAndDelete = function() {
+            // Implement search and delete functionality based on the search query
+            // Send request to the backend API to search for entries to delete
+            // Update $scope.deleteSearchResults with the search results
+        };
+
+        // Function to update an entry
+        $scope.updateEntry = function(entryID) {
+            // Implement update functionality for the selected entry
+            // Send request to the backend API to update the entry
+            // Handle success or error response accordingly
+        };
+
+        // Function to delete an entry
+        $scope.deleteEntry = function(entryID) {
+            // Implement delete functionality for the selected entry
+            // Send request to the backend API to delete the entry
+            // Handle success or error response accordingly
+        };
+
+        // Call the checkAuthentication function when the controller is initialized
+        $scope.checkAuthentication();
     });
 </script>
 
 </body>
+
 </html>
