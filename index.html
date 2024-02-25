@@ -8,29 +8,125 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
     <style>
-        /* Add your custom styles here */
+        /* Custom styles */
+        /* Custom styles */
         body {
             background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove default body margin */
+            padding: 0; /* Remove default body padding */
         }
+
         .container {
-            max-width: 800px;
+            width: 100%; /* Make container full width */
+            max-width: 1200px; /* Limit maximum width */
             margin: 0 auto;
-            padding-top: 50px;
+            padding-top: 20px; /* Adjust padding */
             text-align: center;
+            box-sizing: border-box; /* Include padding and border in width calculation */
         }
-        .hero-section {
+
+        .navbar {
+            margin-bottom: 20px;
+            border-radius: 0; /* Remove default border-radius */
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar-nav li a {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .navbar-nav.navbar-right li a {
+            font-size: 16px;
+        }
+
+        .navbar-default {
             background-color: #337ab7;
+            border-color: #2e6da4;
+            border-radius: 0; /* Remove default border-radius */
+        }
+
+        .navbar-default .navbar-brand,
+        .navbar-default .navbar-nav > li > a {
             color: #fff;
-            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left; /* Align form elements left */
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="datetime-local"],
+        input[type="submit"] {
+            padding: 10px;
             border-radius: 5px;
-            margin-bottom: 30px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            resize: vertical;
         }
-        .hero-section h2 {
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
-        .btn-group {
-            margin-bottom: 20px;
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f2f2f2;
+        }
+
+        /* Update and Delete Section Styles */
+
+        .update-delete-section label {
+            margin-right: 10px;
+        }
+
+        .update-delete-section input[type="text"] {
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        .update-delete-section button {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .update-delete-section button:hover {
+            background-color: #c9302c;
+        }
+
+        .home-img {
+            width: 100%; /* Set image width to 100% */
+            height: auto; /* Maintain aspect ratio */
+        }
+
     </style>
 </head>
 <body>
@@ -96,10 +192,22 @@
     </div>
 
     <!-- Other tabs for different features -->
-    <div ng-show="showHome">
-        <h3>Home</h3>
-        <!-- Add content for home tab here -->
+    <!-- Add content for home tab here -->
+    <div class="home-container" ng-show="showHome">
+        <div class="home-content">
+            <h3>Vehicle Tracking System</h3>
+            <p>Welcome to the Vehicle Tracking System!</p>
+            <p>This system allows you to track vehicles, manage bookings, and more.</p>
+            <p>Get started by navigating through the menu above.</p>
+        </div>
+        <img src="Na_Dec_11.jpg" alt="Homepage" class="home-img">
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2024 Vehicle Tracking System. All rights reserved.</p>
+        </footer>
     </div>
+
+
 
     <div ng-show="showCreate">
         <h3>Create Booking</h3>
@@ -109,10 +217,11 @@
                 <input type="text" class="form-control" id="userID" ng-model="bookingDetails.userID" required>
             </div>
 
-            <div class="form-group">
+          <!--  <div class="form-group">
                 <label for="vehicleID">Vehicle ID:</label>
                 <input type="text" class="form-control" id="vehicleID" ng-model="bookingDetails.vehicleID" required>
-            </div>
+            </div>-->
+
             <div class="form-group">
                 <label for="bookingTime">Booking Time:</label>
                 <input type="datetime-local" class="form-control" id="bookingTime" ng-model="bookingDetails.bookingTime" required>
@@ -307,7 +416,7 @@
         $scope.searchAndUpdate = function() {
             // Implement search and update functionality based on the search query
             // Send request to the backend API to search for entries to update
-            // Update $scope.updateSearchResults with the search results
+            //  $scope.updateSearchResults with the search results
         };
 
         // Function to search and delete entries
