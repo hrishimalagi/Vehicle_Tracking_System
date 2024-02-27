@@ -11,7 +11,7 @@ const port = 3000;
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'hrishiM$943', // Update with your MySQL password
+    password: 'your_mysql_password', // Update with your MySQL password
     database: 'Vehicle_tracking_system'
 });
 
@@ -26,10 +26,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Create Booking operation
-app.post('/api/Bookings', (req, res) => {
-    const { BookingID, VehicleID, UserID, DriverID,BookingTime} = req.body;
-    const sql = `INSERT INTO Booking (BookingID, VehicleID, UserID, DriverID,BookingTime) VALUES (?, ?, ?, ?, ?)`;
-    db.query(sql, [BookingID, VehicleID, UserID, DriverID,BookingTime], (err, result) => {
+app.post('/api/CreateBookings', (req, res) => {
+    const { vehicleID, userID, driverID, bookingTime } = req.body;
+    const sql = `INSERT INTO Booking (VehicleID, UserID, DriverID, BookingTime) VALUES (?, ?, ?, ?)`;
+    db.query(sql, [vehicleID, userID, driverID, bookingTime], (err, result) => {
         if (err) {
             console.error('Error creating booking:', err);
             res.status(500).send('Error creating booking');
@@ -41,9 +41,9 @@ app.post('/api/Bookings', (req, res) => {
 
 // Fetch Bookings operation GET request handler for fetching bookings
 app.get('/api/FetchBookings', (req, res) => {
-    const { BookingTime } = req.query;
+    const { bookingTime } = req.query;
     const sql = `SELECT * FROM Booking WHERE BookingTime = ?`;
-    db.query(sql, [BookingTime], (err, results) => {
+    db.query(sql, [bookingTime], (err, results) => {
         if (err) {
             console.error('Error fetching bookings:', err);
             res.status(500).send('Error fetching bookings');
@@ -53,9 +53,8 @@ app.get('/api/FetchBookings', (req, res) => {
     });
 });
 
-
 // Update Booking operation
-app.put('/api/Updatebookings/:id', (req, res) => {
+app.put('/api/UpdateBookings/:id', (req, res) => {
     const bookingId = req.params.id;
     const { userID, vehicleID, driverID, bookingTime } = req.body;
     const sql = `UPDATE Booking SET UserID=?, VehicleID=?, DriverID=?, BookingTime=? WHERE BookingID=?`;
@@ -86,7 +85,6 @@ app.delete('/api/DeleteBookings/:id', (req, res) => {
         }
     });
 });
-
 
 // Start the server
 app.listen(port, () => {

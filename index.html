@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    <script src="app.js"></script>
     <style>
         /* Custom styles */
         /* Custom styles */
@@ -206,48 +207,34 @@
             <p>&copy; 2024 Vehicle Tracking System. All rights reserved.</p>
         </footer>
     </div>
-
-
-
     <div ng-show="showCreate">
         <h3>Create Booking</h3>
         <form ng-submit="createBooking()">
             <div class="form-group">
-                <label for="userID">User ID:</label>
-                <input type="text" class="form-control" id="userID" ng-model="bookingDetails.userID" required>
-            </div>
-
-          <!--  <div class="form-group">
                 <label for="vehicleID">Vehicle ID:</label>
-                <input type="text" class="form-control" id="vehicleID" ng-model="bookingDetails.vehicleID" required>
-            </div>-->
-
+                <input type="text" id="vehicleID" ng-model="bookingDetails.vehicleID" required>
+            </div>
+            <div class="form-group">
+                <label for="userID">User ID:</label>
+                <input type="text" id="userID" ng-model="bookingDetails.userID" required>
+            </div>
+            <div class="form-group">
+                <label for="driverID">Driver ID:</label>
+                <input type="text" id="driverID" ng-model="bookingDetails.driverID" required>
+            </div>
             <div class="form-group">
                 <label for="bookingTime">Booking Time:</label>
-                <input type="datetime-local" class="form-control" id="bookingTime" ng-model="bookingDetails.bookingTime" required>
+                <input type="datetime-local" id="bookingTime" ng-model="bookingDetails.bookingTime" required>
             </div>
-
-            <!-- Other fields as per your database schema -->
             <button type="submit" class="btn btn-primary">Create Booking</button>
         </form>
     </div>
 
-
-    <!-- Add content for read tab here -->
     <div ng-show="showRead">
         <h3>Read</h3>
-
-
         <div>
             <label for="selectedDate">Select Date:</label>
-            <input type="date" id="selectedDate" ng-model="selectedDate" ng-change="getBookings()">
-            <div>
-                <label for="userID">User ID:</label>
-                <input type="text" id="userID" ng-model="userID">
-                <!-- Add input field for Vehicle ID -->
-                <label for="vehicleID">Vehicle ID:</label>
-                <input type="text" id="vehicleID" ng-model="vehicleID">
-            </div>
+            <input type="date" id="selectedDate" ng-model="selectedDate">
             <button ng-click="getBookings()">Fetch Bookings</button>
         </div>
         <div ng-show="bookings.length > 0">
@@ -255,18 +242,20 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
+                    <th>Booking ID</th>
                     <th>Vehicle ID</th>
                     <th>Driver ID</th>
                     <th>User ID</th>
-                    <!-- Add more headers as per your requirements -->
+                    <th>Booking Time</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="booking in bookings">
-                    <td>{{ booking.vehicleID }}</td>
-                    <td>{{ booking.driverID }}</td>
-                    <td>{{ booking.userID }}</td>
-                    <!-- Add more columns as per your requirements -->
+                    <td>{{ booking.BookingID }}</td>
+                    <td>{{ booking.VehicleID }}</td>
+                    <td>{{ booking.DriverID }}</td>
+                    <td>{{ booking.UserID }}</td>
+                    <td>{{ booking.BookingTime }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -278,26 +267,45 @@
 
 
     <div ng-show="showUpdate">
-        <h3>Update</h3>
+        <h3>Update Booking</h3>
         <div>
-            <label for="updateSearchField">Search:</label>
-            <input type="text" id="updateSearchField" ng-model="updateSearchQuery">
+            <label for="updateBookingId">Booking ID:</label>
+            <input type="text" id="updateBookingId" ng-model="updateBookingId">
             <button ng-click="searchAndUpdate()">Search</button>
         </div>
-        <!-- Display search results and update form here -->
-        <!-- Iterate over search results and provide options to update -->
+        <div ng-show="showUpdateForm">
+            <!-- Input fields for updating booking details -->
+            <div class="form-group">
+                <label for="updateVehicleID">Vehicle ID:</label>
+                <input type="text" id="updateVehicleID" ng-model="updateDetails.vehicleID">
+            </div>
+            <div class="form-group">
+                <label for="updateUserID">User ID:</label>
+                <input type="text" id="updateUserID" ng-model="updateDetails.userID">
+            </div>
+            <div class="form-group">
+                <label for="updateDriverID">Driver ID:</label>
+                <input type="text" id="updateDriverID" ng-model="updateDetails.driverID">
+            </div>
+            <div class="form-group">
+                <label for="updateBookingTime">Booking Time:</label>
+                <input type="datetime-local" id="updateBookingTime" ng-model="updateDetails.bookingTime">
+            </div>
+            <button ng-click="updateEntry(updateBookingId)">Update Booking</button>
+        </div>
     </div>
 
     <div ng-show="showDelete">
         <h3>Delete</h3>
         <div>
-            <label for="deleteSearchField">Search:</label>
-            <input type="text" id="deleteSearchField" ng-model="deleteSearchQuery">
-            <button ng-click="searchAndDelete()">Search</button>
+            <label for="deleteBookingId">Booking ID:</label>
+            <input type="text" id="deleteBookingId" ng-model="deleteBookingId">
+            <button ng-click="deleteEntry(deleteBookingId)">Delete Booking</button>
         </div>
-        <!-- Display search results and delete option here -->
-        <!-- Iterate over search results and provide options to delete -->
     </div>
+
+
+
 </div>
 
 <script>
@@ -335,6 +343,7 @@
             $scope.showDelete = false;
             $scope.showBooking = false;
             $scope.showBookingDetails = false;
+            $scope.showUpdateForm=true;
 
             // Set the flag for the selected section
             if (section === 'login') {
@@ -381,7 +390,7 @@
             // Check if the user is authenticated
             if ($scope.isAuthenticated) {
                 // Send booking details to the server
-                $http.post('/api/bookings', $scope.bookingDetails)
+                $http.post('/api/Bookings', $scope.bookingDetails)
                     .then(function(response) {
                         // Display booking details to the user
                         $scope.bookedVehicle = response.data;
