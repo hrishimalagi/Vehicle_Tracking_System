@@ -1,0 +1,66 @@
+CREATE DATABASE Vehicle_tracking_system;
+USE Vehicle_tracking_system;
+
+
+CREATE TABLE User (
+    UserID INT PRIMARY KEY,
+    Username VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Vehicle (
+    VehicleID INT PRIMARY KEY,
+    Model VARCHAR(255) NOT NULL,
+    Registration VARCHAR(20) NOT NULL,
+    UserID INT,
+    FOREIGN KEY (UserID) REFERENCES User(UserID)
+);
+
+CREATE TABLE Booking (
+    BookingID INT PRIMARY KEY,
+    VehicleID INT,
+    UserID INT,
+    DriverID INT,
+    BookingTime TIMESTAMP,
+    FOREIGN KEY (VehicleID) REFERENCES Vehicle(VehicleID),
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (DriverID) REFERENCES Driver(DriverID)
+);
+
+CREATE TABLE Driver (
+    DriverID INT PRIMARY KEY,
+    UserID INT,
+    VehicleID INT,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (VehicleID) REFERENCES Vehicle(VehicleID)
+);
+
+CREATE TABLE Maintenance (
+    MaintenanceID INT PRIMARY KEY,
+    VehicleID INT,
+    MaintenanceType VARCHAR(255) NOT NULL,
+    Description TEXT,
+    MaintenanceDate DATE,
+    Cost DECIMAL(10, 2),
+    FOREIGN KEY (VehicleID) REFERENCES Vehicle(VehicleID)
+);
+
+use Vehicle_tracking_system;
+-- Creating a View
+CREATE VIEW User_Vehicle_Info AS
+SELECT u.Username, v.Model, v.Registration
+FROM User u
+JOIN Vehicle v ON u.UserID = v.UserID;
+
+-- Creating a Trigger
+DELIMITER $$
+CREATE TRIGGER after_user_insert
+AFTER INSERT ON User
+FOR EACH ROW
+BEGIN
+    -- Your trigger logic here
+    INSERT INTO AuditTrail (Action, TableName, UserID, Timestamp)
+    VALUES ('INSERT', 'User', NEW.UserID, NOW());
+END$$
+DELIMITER ;
+
