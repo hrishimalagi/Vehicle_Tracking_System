@@ -11,7 +11,7 @@ const port = 3000;
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'your_mysql_password', // Update with your MySQL password
+    password: 'hrishiM$943', // Update with your MySQL password
     database: 'Vehicle_tracking_system'
 });
 
@@ -38,6 +38,7 @@ app.post('/api/CreateBookings', (req, res) => {
         }
     });
 });
+
 
 // Fetch Bookings operation GET request handler for fetching bookings
 app.get('/api/FetchBookings', (req, res) => {

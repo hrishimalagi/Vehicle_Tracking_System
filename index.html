@@ -226,7 +226,7 @@
                 <label for="bookingTime">Booking Time:</label>
                 <input type="datetime-local" id="bookingTime" ng-model="bookingDetails.bookingTime" required>
             </div>
-            <button type="submit" class="btn btn-primary">Create Booking</button>
+            <button type="submit" class="btn btn-primary" onclick=function $>Create Booking</button>
         </form>
     </div>
 
@@ -386,11 +386,12 @@
         };
 
         // Function to handle booking a vehicle
+        // Function to book a vehicle
         $scope.bookVehicle = function() {
             // Check if the user is authenticated
             if ($scope.isAuthenticated) {
                 // Send booking details to the server
-                $http.post('/api/Bookings', $scope.bookingDetails)
+                $http.post('/api/CreateBookings', $scope.bookingDetails)
                     .then(function(response) {
                         // Display booking details to the user
                         $scope.bookedVehicle = response.data;
@@ -405,13 +406,13 @@
             }
         };
 
-        // Function to fetch bookings for the selected date
+// Function to fetch bookings for the selected date
         $scope.getBookings = function() {
             // Format selected date to YYYY-MM-DD format
             var formattedDate = $scope.selectedDate.toISOString().split('T')[0];
 
             // Make an HTTP request to fetch bookings based on the selected date
-            $http.get('/api/bookings?date=' + formattedDate)
+            $http.get('/api/FetchBookings?bookingTime=' + formattedDate)
                 .then(function(response) {
                     $scope.bookings = response.data; // Assign fetched bookings to scope variable
                     $scope.showRead = true; // Show the Read section
@@ -421,32 +422,28 @@
                 });
         };
 
-        // Function to search and update entries
-        $scope.searchAndUpdate = function() {
-            // Implement search and update functionality based on the search query
-            // Send request to the backend API to search for entries to update
-            //  $scope.updateSearchResults with the search results
-        };
-
-        // Function to search and delete entries
-        $scope.searchAndDelete = function() {
-            // Implement search and delete functionality based on the search query
-            // Send request to the backend API to search for entries to delete
-            // Update $scope.deleteSearchResults with the search results
-        };
-
-        // Function to update an entry
+// Function to update an entry
         $scope.updateEntry = function(entryID) {
             // Implement update functionality for the selected entry
-            // Send request to the backend API to update the entry
-            // Handle success or error response accordingly
+            $http.put('/api/UpdateBookings/' + entryID, $scope.updateDetails)
+                .then(function(response) {
+                    // Handle success response accordingly
+                })
+                .catch(function(error) {
+                    console.error('Error updating entry:', error);
+                });
         };
 
-        // Function to delete an entry
+// Function to delete an entry
         $scope.deleteEntry = function(entryID) {
             // Implement delete functionality for the selected entry
-            // Send request to the backend API to delete the entry
-            // Handle success or error response accordingly
+            $http.delete('/api/DeleteBookings/' + entryID)
+                .then(function(response) {
+                    // Handle success response accordingly
+                })
+                .catch(function(error) {
+                    console.error('Error deleting entry:', error);
+                });
         };
 
         // Call the checkAuthentication function when the controller is initialized
