@@ -1,35 +1,31 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="vehicleTrackingApp">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle Tracking System</title>
+    <title>Vehicle Rentals System</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
-    <script src="app.js"></script>
     <style>
-        /* Custom styles */
         /* Custom styles */
         body {
             background-color: #f5f5f5;
             font-family: Arial, sans-serif;
-            margin: 0; /* Remove default body margin */
-            padding: 0; /* Remove default body padding */
+            margin: 0;
+            padding: 0;
         }
 
         .container {
-            width: 100%; /* Make container full width */
-            max-width: 1200px; /* Limit maximum width */
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
-            padding-top: 20px; /* Adjust padding */
+            padding-top: 20px;
             text-align: center;
-            box-sizing: border-box; /* Include padding and border in width calculation */
+            box-sizing: border-box;
         }
 
         .navbar {
             margin-bottom: 20px;
-            border-radius: 0; /* Remove default border-radius */
+            border-radius: 0;
         }
 
         .navbar-brand {
@@ -49,7 +45,7 @@
         .navbar-default {
             background-color: #337ab7;
             border-color: #2e6da4;
-            border-radius: 0; /* Remove default border-radius */
+            border-radius: 0;
         }
 
         .navbar-default .navbar-brand,
@@ -57,400 +53,67 @@
             color: #fff;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left; /* Align form elements left */
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="date"],
-        input[type="datetime-local"],
-        input[type="submit"] {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            box-sizing: border-box;
-            margin-top: 8px;
-            margin-bottom: 16px;
-            resize: vertical;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+        footer p {
+            margin: 0;
+            text-align: center;
         }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        td {
-            background-color: #f2f2f2;
-        }
-
-        /* Update and Delete Section Styles */
-
-        .update-delete-section label {
-            margin-right: 10px;
-        }
-
-        .update-delete-section input[type="text"] {
-            margin-right: 10px;
-            width: 200px;
-        }
-
-        .update-delete-section button {
-            margin-top: 10px;
-            padding: 8px 20px;
-            background-color: #d9534f;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .update-delete-section button:hover {
-            background-color: #c9302c;
-        }
-
         .home-img {
             width: 100%; /* Set image width to 100% */
             height: auto; /* Maintain aspect ratio */
         }
-
     </style>
 </head>
 <body>
 
-<div class="container" ng-controller="MainController">
+<header>
     <!-- Navbar with login and registration options -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Vehicle Tracking</a>
+                <a class="navbar-brand" href="#">Vehicle Rentals</a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a ng-click="toggle('home')">HOME</a></li>
-                <li><a ng-click="toggle('create')">CREATE</a></li>
-                <li><a ng-click="toggle('read')">READ</a></li>
-                <li><a ng-click="toggle('update')">UPDATE</a></li>
-                <li><a ng-click="toggle('delete')">DELETE</a></li>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="create.html">Booking</a></li>
+                <li><a href="read.html">View Booking</a></li>
+                <li><a href="update.html">Update Booking</a></li>
+                <li><a href="delete.html">Cancel Booking</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a ng-click="toggle('login')">Login</a></li>
+                <li><a href="login.html">Login</a></li>
             </ul>
         </div>
     </nav>
+</header>
 
-    <!-- Login tab with login component -->
-    <div ng-show="showLogin">
-        <h3>Login</h3>
-        <form ng-submit="login()">
-            <input type="text" ng-model="loginData.username" placeholder="Username" required>
-            <input type="password" ng-model="loginData.password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p>New user? <a ng-click="toggle('registration')">Register here</a></p>
-    </div>
-
-    <!-- Registration tab with registration component -->
-    <div ng-show="showRegistration">
-        <h3>Registration</h3>
-        <form ng-submit="register()">
-            <input type="text" ng-model="registrationData.username" placeholder="Username" required>
-            <input type="password" ng-model="registrationData.password" placeholder="Password" required>
-            <button type="submit">Register</button>
-        </form>
-    </div>
-
-    <!-- Booking form -->
-    <div ng-show="showBooking" ng-if="isAuthenticated">
-        <h3>Book a Vehicle</h3>
-        <form ng-submit="bookVehicle()">
-            <input type="text" ng-model="bookingDetails.vehicleID" placeholder="Vehicle ID" required>
-            <input type="datetime-local" ng-model="bookingDetails.bookingTime" required>
-            <!-- Other booking details -->
-            <button type="submit">Book</button>
-        </form>
-    </div>
-
-    <!-- Display booking details -->
-    <div ng-show="showBookingDetails">
-        <h3>Your Booking Details</h3>
-        <p>Vehicle ID: {{ bookedVehicle.vehicleID }}</p>
-        <p>Booking Time: {{ bookedVehicle.bookingTime }}</p>
-        <!-- Display other booking details -->
-    </div>
-
-    <!-- Other tabs for different features -->
-    <!-- Add content for home tab here -->
-    <div class="home-container" ng-show="showHome">
-        <div class="home-content">
-            <h3>Vehicle Tracking System</h3>
-            <p>Welcome to the Vehicle Tracking System!</p>
-            <p>This system allows you to track vehicles, manage bookings, and more.</p>
-            <p>Get started by navigating through the menu above.</p>
-        </div>
+<main>
+    <!-- Main content area -->
+    <div class="container">
+        <!-- Your main content goes here -->
+        <h1>Welcome to Vehicle Rental System</h1>
+        <p>This is the main content area of your website.</p>
+        <br>
         <img src="Na_Dec_11.jpg" alt="Homepage" class="home-img">
-        <!-- Footer -->
-        <footer>
-            <p>&copy; 2024 Vehicle Tracking System. All rights reserved.</p>
-        </footer>
+
     </div>
-    <div ng-show="showCreate">
-        <h3>Create Booking</h3>
-        <form ng-submit="createBooking()">
-            <div class="form-group">
-                <label for="vehicleID">Vehicle ID:</label>
-                <input type="text" id="vehicleID" ng-model="bookingDetails.vehicleID" required>
-            </div>
-            <div class="form-group">
-                <label for="userID">User ID:</label>
-                <input type="text" id="userID" ng-model="bookingDetails.userID" required>
-            </div>
-            <div class="form-group">
-                <label for="driverID">Driver ID:</label>
-                <input type="text" id="driverID" ng-model="bookingDetails.driverID" required>
-            </div>
-            <div class="form-group">
-                <label for="bookingTime">Booking Time:</label>
-                <input type="datetime-local" id="bookingTime" ng-model="bookingDetails.bookingTime" required>
-            </div>
-            <button type="submit" class="btn btn-primary" onclick=function $>Create Booking</button>
-        </form>
+</main>
+
+<footer>
+    <!-- Footer -->
+    <div class="container">
+        <p>&copy; 2024 Vehicle Rental System. All rights reserved.</p>
+        <p> This page is designed and developed by Hrishikesh Shrish Malagi</p>
     </div>
-
-    <div ng-show="showRead">
-        <h3>Read</h3>
-        <div>
-            <label for="selectedDate">Select Date:</label>
-            <input type="date" id="selectedDate" ng-model="selectedDate">
-            <button ng-click="getBookings()">Fetch Bookings</button>
-        </div>
-        <div ng-show="bookings.length > 0">
-            <h4>Bookings for {{ selectedDate | date: 'yyyy-MM-dd' }}</h4>
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>Vehicle ID</th>
-                    <th>Driver ID</th>
-                    <th>User ID</th>
-                    <th>Booking Time</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="booking in bookings">
-                    <td>{{ booking.BookingID }}</td>
-                    <td>{{ booking.VehicleID }}</td>
-                    <td>{{ booking.DriverID }}</td>
-                    <td>{{ booking.UserID }}</td>
-                    <td>{{ booking.BookingTime }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div ng-show="bookings.length === 0 && selectedDate">
-            <p>No bookings found for {{ selectedDate | date: 'yyyy-MM-dd' }}</p>
-        </div>
-    </div>
-
-
-    <div ng-show="showUpdate">
-        <h3>Update Booking</h3>
-        <div>
-            <label for="updateBookingId">Booking ID:</label>
-            <input type="text" id="updateBookingId" ng-model="updateBookingId">
-            <button ng-click="searchAndUpdate()">Search</button>
-        </div>
-        <div ng-show="showUpdateForm">
-            <!-- Input fields for updating booking details -->
-            <div class="form-group">
-                <label for="updateVehicleID">Vehicle ID:</label>
-                <input type="text" id="updateVehicleID" ng-model="updateDetails.vehicleID">
-            </div>
-            <div class="form-group">
-                <label for="updateUserID">User ID:</label>
-                <input type="text" id="updateUserID" ng-model="updateDetails.userID">
-            </div>
-            <div class="form-group">
-                <label for="updateDriverID">Driver ID:</label>
-                <input type="text" id="updateDriverID" ng-model="updateDetails.driverID">
-            </div>
-            <div class="form-group">
-                <label for="updateBookingTime">Booking Time:</label>
-                <input type="datetime-local" id="updateBookingTime" ng-model="updateDetails.bookingTime">
-            </div>
-            <button ng-click="updateEntry(updateBookingId)">Update Booking</button>
-        </div>
-    </div>
-
-    <div ng-show="showDelete">
-        <h3>Delete</h3>
-        <div>
-            <label for="deleteBookingId">Booking ID:</label>
-            <input type="text" id="deleteBookingId" ng-model="deleteBookingId">
-            <button ng-click="deleteEntry(deleteBookingId)">Delete Booking</button>
-        </div>
-    </div>
-
-
-
-</div>
-
-<script>
-    var vehicleTrackingApp = angular.module('vehicleTrackingApp', []);
-
-    vehicleTrackingApp.controller('MainController', function ($scope, $http) {
-        // Flags for controlling visibility of components
-        $scope.showLogin = false;
-        $scope.showRegistration = false;
-        $scope.showHome = true;
-        $scope.showCreate = false;
-        $scope.showRead = false;
-        $scope.showUpdate = false;
-        $scope.showDelete = false;
-        $scope.showBooking = false;
-        $scope.showBookingDetails = false;
-
-        $scope.isAuthenticated = true; // Initialize authentication status
-        $scope.bookingDetails = {}; // Initialize booking details
-        $scope.bookedVehicle = {}; // Initialize booked vehicle details
-        $scope.loginData = {}; // Initialize login data
-        $scope.registrationData = {}; // Initialize registration data
-        $scope.selectedDate = new Date(); // Initialize selected date
-        $scope.bookings = []; // Initialize array to hold bookings
-
-        // Function to toggle component visibility
-        $scope.toggle = function (section) {
-            // Reset all flags
-            $scope.showLogin = false;
-            $scope.showRegistration = false;
-            $scope.showHome = false;
-            $scope.showCreate = false;
-            $scope.showRead = false;
-            $scope.showUpdate = false;
-            $scope.showDelete = false;
-            $scope.showBooking = false;
-            $scope.showBookingDetails = false;
-            $scope.showUpdateForm=true;
-
-            // Set the flag for the selected section
-            if (section === 'login') {
-                $scope.showLogin = true;
-            } else if (section === 'registration') {
-                $scope.showRegistration = true;
-            } else if (section === 'home') {
-                $scope.showHome = true;
-            } else if (section === 'create') {
-                $scope.showCreate = true;
-            } else if (section === 'read') {
-                $scope.showRead = true;
-            } else if (section === 'update') {
-                $scope.showUpdate = true;
-            } else if (section === 'delete') {
-                $scope.showDelete = true;
-            } else if (section === 'booking') {
-                $scope.showBooking = true;
-            } else if (section === 'bookingDetails') {
-                $scope.showBookingDetails = true;
-            } else {
-                $scope.showHome = true; // Default to home
-            }
-        };
-
-        // Function to handle user login
-        $scope.login = function() {
-            // Implement login functionality
-        };
-
-        // Function to handle user registration
-        $scope.register = function() {
-            // Implement user registration functionality
-        };
-
-        // Function to check if the user is authenticated
-        $scope.checkAuthentication = function() {
-            // Implement authentication check logic
-            // Set $scope.isAuthenticated based on authentication status
-        };
-
-        // Function to handle booking a vehicle
-        // Function to book a vehicle
-        $scope.bookVehicle = function() {
-            // Check if the user is authenticated
-            if ($scope.isAuthenticated) {
-                // Send booking details to the server
-                $http.post('/api/CreateBookings', $scope.bookingDetails)
-                    .then(function(response) {
-                        // Display booking details to the user
-                        $scope.bookedVehicle = response.data;
-                        $scope.showBookingDetails = true;
-                    })
-                    .catch(function(error) {
-                        console.error('Error booking vehicle:', error);
-                    });
-            } else {
-                // Prompt user to log in before booking
-                alert('Please log in to book a vehicle.');
-            }
-        };
-
-// Function to fetch bookings for the selected date
-        $scope.getBookings = function() {
-            // Format selected date to YYYY-MM-DD format
-            var formattedDate = $scope.selectedDate.toISOString().split('T')[0];
-
-            // Make an HTTP request to fetch bookings based on the selected date
-            $http.get('/api/FetchBookings?bookingTime=' + formattedDate)
-                .then(function(response) {
-                    $scope.bookings = response.data; // Assign fetched bookings to scope variable
-                    $scope.showRead = true; // Show the Read section
-                })
-                .catch(function(error) {
-                    console.error('Error fetching bookings:', error);
-                });
-        };
-
-// Function to update an entry
-        $scope.updateEntry = function(entryID) {
-            // Implement update functionality for the selected entry
-            $http.put('/api/UpdateBookings/' + entryID, $scope.updateDetails)
-                .then(function(response) {
-                    // Handle success response accordingly
-                })
-                .catch(function(error) {
-                    console.error('Error updating entry:', error);
-                });
-        };
-
-// Function to delete an entry
-        $scope.deleteEntry = function(entryID) {
-            // Implement delete functionality for the selected entry
-            $http.delete('/api/DeleteBookings/' + entryID)
-                .then(function(response) {
-                    // Handle success response accordingly
-                })
-                .catch(function(error) {
-                    console.error('Error deleting entry:', error);
-                });
-        };
-
-        // Call the checkAuthentication function when the controller is initialized
-        $scope.checkAuthentication();
-    });
-</script>
+</footer>
 
 </body>
-
 </html>

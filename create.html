@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Booking - Vehicle Rental System</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS for form layout */
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove default body margin */
+            padding: 0; /* Remove default body padding */
+        }
+
+        .container {
+            width: 100%; /* Make container full width */
+            max-width: 1200px; /* Limit maximum width */
+            margin: 0 auto;
+            padding-top: 20px; /* Adjust padding */
+            text-align: center;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+        }
+
+        form {
+            margin-top: 20px; /* Adjust top margin */
+            text-align: left;
+        }
+
+        /* Style for labels */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        /* Style for input fields */
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Style for submit button */
+        input[type="submit"] {
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Hover effect for submit button */
+        input[type="submit"]:hover {
+            background-color: #2e6da4;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 50px; /* Adjust top margin */
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Navbar with login and registration options -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Vehicle Rental</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="create.html">Booking</a></li>
+                <li><a href="read.html">View Booking</a></li>
+                <li><a href="update.html">Update Booking</a></li>
+                <li><a href="delete.html">Cancel Booking</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <h1>Create Booking</h1>
+    <form id="createBookingForm">
+        <label for="vehicleID">Vehicle ID:</label>
+        <input type="text" id="vehicleID" required>
+
+        <label for="userID">User ID:</label>
+        <input type="text" id="userID" required>
+
+        <label for="driverID">Driver ID:</label>
+        <input type="text" id="driverID" required>
+
+        <label for="bookingTime">Booking Time:</label>
+        <input type="datetime-local" id="bookingTime" required>
+
+        <input type="submit" value="Create Booking">
+    </form>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Vehicle Rental System. All rights reserved.</p>
+        <p> This page is designed and developed by Hrishikesh Shrish Malagi</p>
+
+    </footer>
+</div>
+<!-- JavaScript code for handling form submission or any dynamic behavior -->
+<script>
+
+        document.getElementById('createBookingForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const vehicleID = document.getElementById('vehicleID').value;
+        const userID = document.getElementById('userID').value;
+        const driverID = document.getElementById('driverID').value;
+        const bookingTime = document.getElementById('bookingTime').value;
+
+        fetch('http://localhost:3000/api/CreateBookings', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+    },
+        body: JSON.stringify({
+        vehicleID: vehicleID,
+        userID: userID,
+        driverID: driverID,
+        bookingTime: bookingTime
+    })
+    })
+        .then(response => {
+        if (response.ok) {
+        return response.json(); // Parse response body as JSON
+    } else {
+        throw new Error('Failed to create booking');
+    }
+    })
+        .then(data => {
+        // Display booking details including the booking ID
+        alert('Booking created successfully! Booking ID: ' + data.bookingID);
+    })
+        .catch(error => {
+        console.error('Error creating booking:', error);
+        alert('An error occurred while creating the booking');
+    });
+    });
+</script>
+
+</body>
+</html>

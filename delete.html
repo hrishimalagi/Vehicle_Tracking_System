@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Booking - Vehicle Rental System</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS for form layout */
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        form {
+            margin-top: 20px;
+            width: 300px;
+            margin: 20px auto;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2e6da4;
+        }
+
+        footer {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Vehicle Rental</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="create.html">Booking</a></li>
+                <li><a href="read.html">View Booking</a></li>
+                <li><a href="update.html">Update Booking</a></li>
+                <li><a href="delete.html">Cancel Booking</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <h1>Delete Booking</h1>
+    <form id="deleteForm">
+        <label for="deleteBookingId">Booking ID:</label>
+        <input type="text" id="deleteBookingId" required>
+        <input type="submit" value="Delete Booking">
+    </form>
+
+    <footer>
+        <p>&copy; 2024 Vehicle Rental System. All rights reserved.</p>
+        <p> This page is designed and developed by Hrishikesh Shrish Malagi</p>
+
+    </footer>
+</div>
+
+<!-- JavaScript code for handling form submission or any dynamic behavior -->
+<script>
+    document.getElementById('deleteForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const bookingId = document.getElementById('deleteBookingId').value;
+
+        fetch("http://localhost:3000/api/DeleteBookings/" + bookingId, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Booking deleted successfully');
+                } else {
+                    throw new Error('Failed to delete booking');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting booking:', error);
+                alert('An error occurred while deleting the booking');
+            });
+    });
+</script>
+</body>
+</html>
